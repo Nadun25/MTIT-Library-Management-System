@@ -1,0 +1,8 @@
+1. Microservices for the Library Domain (Node.js)
+Each member builds one microservice as a simple Express app. Use the same ports as before.
+
+Microservice	Member	Port	Endpoints (example)
+Book Service	Member 1	8081	GET /api/books, POST /api/books, GET /api/books/:id, PUT /api/books/:id, DELETE /api/books/:id
+Member Service	Member 2	8082	GET /api/members, POST /api/members, GET /api/members/:id, PUT /api/members/:id, DELETE /api/members/:id
+Loan Service	Member 3	8083	POST /api/loans/checkout, PUT /api/loans/return/:loanId, GET /api/loans/member/:memberId, GET /api/loans/overdue
+Fine Service	Member 4	8084	GET /api/fines/member/:memberId, POST /api/fines/pay/:fineId, GET /api/fines/unpaid
