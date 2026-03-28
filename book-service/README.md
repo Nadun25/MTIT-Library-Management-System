@@ -84,15 +84,66 @@ MongoDB Connected: localhost
 ```
 If you see **"MongoDB Connected,"** the connection is successful.
 
+
+
+
+
+
 ### 2. Interactive Documentation (Recommended)
 Open your web browser and visit:
 👉 **[http://localhost:8081/api-docs](http://localhost:8081/api-docs)**
 
-This is the **Swagger UI**. You can:
-- Expand an endpoint (e.g., `POST /api/books`).
-- Click **"Try it out"**.
-- Edit the sample JSON body (add a title, author, and isbn).
-- Click **"Execute"** to send the request and see the live response.
+
+
+
+
+
+#### Testing with Sample Data:
+
+**1. Create a Book (POST):**
+- Expand `POST /api/books` and click **"Try it out"**.
+- Use this JSON (copy/paste):
+  ```json
+  {
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "author": "J.K. Rowling",
+    "isbn": "978-0439708180",
+    "publishedYear": 1997,
+    "available": true
+  }
+  ```
+- Click **"Execute"**. Copy the `_id` from the response.
+
+**2. List All Books (GET):**
+- Expand `GET /api/books` and click **"Try it out"**.
+- Click **"Execute"**. You will see the list of all books in the database.
+
+**3. Get a Single Book (GET):**
+- Expand `GET /api/books/{id}` and click **"Try it out"**.
+- Paste the `_id` into the `id` field.
+- Click **"Execute"** to see that specific book's details.
+
+**4. Update a Book (PUT):**
+- Expand `PUT /api/books/{id}` and click **"Try it out"**.
+- Paste the `_id` you copied into the `id` field.
+- Use this JSON to update (e.g., change availability):
+  ```json
+  {
+    "available": false
+  }
+  ```
+- Click **"Execute"**.
+
+**5. Delete a Book (DELETE):**
+- Expand `DELETE /api/books/{id}` and click **"Try it out"**.
+- Paste the `_id` into the `id` field.
+- Click **"Execute"**.
+
+*Note: Do NOT include `_id`, `createdAt`, or `updatedAt` in the JSON request body. These are handled automatically by the database.*
+
+
+
+
 
 ### 3. Quick Health Check
 Visit this link in your browser:
