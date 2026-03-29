@@ -15,6 +15,9 @@ const {
  *   schemas:
  *     Member:
  *       type: object
+ *       required:
+ *         - name
+ *         - email
  *       properties:
  *         id:
  *           type: integer
@@ -64,23 +67,50 @@ router.route('/')
  *         required: true
  *         schema:
  *           type: integer
+ *         description: Member ID
  *     responses:
  *       200:
  *         description: Member found
  *       404:
  *         description: Member not found
+ *
  *   put:
  *     summary: Update member
  *     tags: [Members]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Member ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Member'
  *     responses:
  *       200:
  *         description: Member updated
+ *       404:
+ *         description: Member not found
+ *
  *   delete:
  *     summary: Delete member
  *     tags: [Members]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Member ID
  *     responses:
  *       200:
  *         description: Member deleted
+ *       404:
+ *         description: Member not found
  */
 router.route('/:id')
     .get(getMemberById)
