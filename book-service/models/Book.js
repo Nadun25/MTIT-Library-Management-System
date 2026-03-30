@@ -19,25 +19,15 @@ const bookSchema = new mongoose.Schema({
     },
     publishedYear: {
         type: Number,
-        min: [1000, 'Published year is too old'],
-        max: [2100, 'Published year is in the far future']
+        min: 1000,
+        max: 2100
     },
     available: {
         type: Boolean,
         default: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
 }, {
-    timestamps: true // This will automatically add and update createdAt and updatedAt
+    timestamps: true // automatically adds createdAt & updatedAt
 });
 
-const Book = mongoose.model('Book', bookSchema);
-
-module.exports = Book;
+module.exports = mongoose.model('Book', bookSchema);

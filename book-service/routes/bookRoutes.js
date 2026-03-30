@@ -14,10 +14,6 @@ const {
  *   schemas:
  *     Book:
  *       type: object
- *       required:
- *         - title
- *         - author
- *         - isbn
  *       properties:
  *         _id:
  *           type: string
@@ -36,16 +32,31 @@ const {
  *           description: Year the book was published
  *         available:
  *           type: boolean
- *           default: true
- *           description: Availability status of the book
+ *           description: Availability status
  *         createdAt:
  *           type: string
  *           format: date-time
- *           description: Time the book was created
  *         updatedAt:
  *           type: string
  *           format: date-time
- *           description: Time the book was updated
+ *
+ *     BookInput:
+ *       type: object
+ *       required:
+ *         - title
+ *         - author
+ *         - isbn
+ *       properties:
+ *         title:
+ *           type: string
+ *         author:
+ *           type: string
+ *         isbn:
+ *           type: string
+ *         publishedYear:
+ *           type: integer
+ *         available:
+ *           type: boolean
  */
 
 /**
@@ -63,6 +74,7 @@ const {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Book'
+ *
  *   post:
  *     summary: Create a new book
  *     tags: [Books]
@@ -71,12 +83,10 @@ const {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Book'
+ *             $ref: '#/components/schemas/BookInput'
  *     responses:
  *       201:
  *         description: Book created successfully
- *       400:
- *         description: Bad request
  */
 
 router.route('/')
@@ -95,14 +105,14 @@ router.route('/')
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the book
  *     responses:
  *       200:
- *         description: Successfully retrieved the book
+ *         description: Book retrieved
  *       404:
  *         description: Book not found
+ *
  *   put:
- *     summary: Update a book (partial updates allowed)
+ *     summary: Update a book
  *     tags: [Books]
  *     parameters:
  *       - in: path
@@ -110,18 +120,16 @@ router.route('/')
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the book
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Book'
+ *             $ref: '#/components/schemas/BookInput'
  *     responses:
  *       200:
- *         description: Book updated successfully
- *       404:
- *         description: Book not found
+ *         description: Book updated
+ *
  *   delete:
  *     summary: Delete a book
  *     tags: [Books]
@@ -131,12 +139,9 @@ router.route('/')
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the book
  *     responses:
  *       200:
- *         description: Book deleted successfully
- *       404:
- *         description: Book not found
+ *         description: Book deleted
  */
 
 router.route('/:id')

@@ -66,20 +66,27 @@ const getBookById = async (req, res, next) => {
 // @access  Public
 const updateBook = async (req, res, next) => {
     try {
-        const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
+        const book = await Book.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                returnDocument: 'after', // replaces new:true
+                runValidators: true
+            }
+        );
+
         if (!book) {
             return res.status(404).json({
                 success: false,
                 error: 'Book not found'
             });
         }
+
         res.status(200).json({
             success: true,
             data: book
         });
+
     } catch (error) {
         res.status(400).json({
             success: false,
