@@ -1,5 +1,15 @@
 const Loan = require('../models/Loan');
 
+// GET /api/loans
+exports.getAllLoans = async (req, res, next) => {
+  try {
+    const loans = await Loan.find().sort({ loanDate: -1 });
+    res.status(200).json(loans);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // POST /api/loans/checkout
 exports.checkoutBook = async (req, res, next) => {
   try {

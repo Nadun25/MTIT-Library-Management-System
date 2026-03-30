@@ -7,7 +7,7 @@ const options = {
         info: {
             title: 'Library API Gateway',
             version: '1.0.0',
-            description: 'Unified API Gateway for Book & Member Services'
+            description: 'Unified API Gateway for Book, Member & Loan Services'
         },
         servers: [
             {
@@ -16,8 +16,7 @@ const options = {
         ]
     },
     apis: [
-        '../member-service/routes/*.js',
-        '../book-service/routes/*.js'
+        './swagger/routes.js'
     ]
 };
 

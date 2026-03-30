@@ -41,6 +41,26 @@ const loanController = require('../controllers/loanController');
 
 /**
  * @swagger
+ * /api/loans:
+ *   get:
+ *     summary: Get all loans
+ *     tags: [Loans]
+ *     responses:
+ *       200:
+ *         description: List of all loans
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Loan'
+ *       500:
+ *         description: Server error
+ */
+router.get('/', loanController.getAllLoans);
+
+/**
+ * @swagger
  * /api/loans/checkout:
  *   post:
  *     summary: Create a new loan (checkout a book)
@@ -173,12 +193,7 @@ router.get('/overdue', loanController.getOverdueLoans);
  *         description: Loan not found
  *       500:
  *         description: Server error
- */
-router.get('/:id', loanController.getLoanById);
-
-/**
- * @swagger
- * /api/loans/{id}:
+ *
  *   delete:
  *     summary: Delete a loan
  *     tags: [Loans]
@@ -197,6 +212,7 @@ router.get('/:id', loanController.getLoanById);
  *       500:
  *         description: Server error
  */
+router.get('/:id', loanController.getLoanById);
 router.delete('/:id', loanController.deleteLoan);
 
 module.exports = router;
