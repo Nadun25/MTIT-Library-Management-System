@@ -20,7 +20,7 @@ const {
  *         - email
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         name:
  *           type: string
  *         email:
@@ -37,9 +37,10 @@ const {
  *     tags: [Members]
  *     responses:
  *       200:
- *         description: List of members
+ *         description: Success
+ *
  *   post:
- *     summary: Create a new member
+ *     summary: Create member
  *     tags: [Members]
  *     requestBody:
  *       required: true
@@ -49,7 +50,7 @@ const {
  *             $ref: '#/components/schemas/Member'
  *     responses:
  *       201:
- *         description: Member created
+ *         description: Created successfully
  */
 router.route('/')
     .get(getAllMembers)
@@ -66,13 +67,10 @@ router.route('/')
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
- *         description: Member ID
+ *           type: string
  *     responses:
  *       200:
- *         description: Member found
- *       404:
- *         description: Member not found
+ *         description: Success
  *
  *   put:
  *     summary: Update member
@@ -82,9 +80,8 @@ router.route('/')
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
- *         description: Member ID
- *     requestBody:
+ *           type: string
+ *     requestBody:              # 🔥 FIXED (IMPORTANT)
  *       required: true
  *       content:
  *         application/json:
@@ -92,9 +89,7 @@ router.route('/')
  *             $ref: '#/components/schemas/Member'
  *     responses:
  *       200:
- *         description: Member updated
- *       404:
- *         description: Member not found
+ *         description: Updated
  *
  *   delete:
  *     summary: Delete member
@@ -104,13 +99,10 @@ router.route('/')
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
- *         description: Member ID
+ *           type: string
  *     responses:
  *       200:
- *         description: Member deleted
- *       404:
- *         description: Member not found
+ *         description: Deleted
  */
 router.route('/:id')
     .get(getMemberById)

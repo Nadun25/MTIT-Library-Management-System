@@ -1,120 +1,124 @@
-/**
- * Member Controller
- * ------------------------------------
- * Handles all logic for member operations
- */
-
-// In-memory "database"
-let members = [
-    { id: 1, name: 'Alice', email: 'alice@yahoo.com', active: true },
-    { id: 2, name: 'Bob', email: 'bob@google.com', active: true }
-];
-
-let nextId = 3;
+const Member = require('../models/Member');
 
 /**
  * GET all members
  */
-const getAllMembers = (req, res) => {
-    res.status(200).json({
-        success: true,
-        count: members.length,
-        data: members
-    });
+const getAllMembers = async (req, res, next) => {
+    try {
+        const members = await Member.find();
+
+        res.status(200).json({
+            success: true,
+            count: members.length,
+            data: members
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 /**
- * CREATE new member
+ * CREATE member
  */
-const createMember = (req, res) => {
-    const { name, email } = req.body;
+const createMember = async (req, res, next) => {
+    try {
+        console.log("BODY:", req.body); // 🔥 DEBUG
 
-    // Validation
-    if (!name || !email) {
-        return res.status(400).json({
-            success: false,
-            error: 'Name and Email are required'
+        const { name, email } = req.body;
+
+        if (!name || !email) {
+            return res.status(400).json({
+                success: false,
+                error: 'Name and Email are required'
+            });
+        }
+
+        const member = await Member.create({ name, email });
+
+        res.status(201).json({
+            success: true,
+            data: member
         });
+
+    } catch (error) {
+        next(error);
     }
-
-    const newMember = {
-        id: nextId++,
-        name,
-        email,
-        active: true
-    };
-
-    members.push(newMember);
-
-    res.status(201).json({
-        success: true,
-        data: newMember
-    });
 };
 
 /**
- * GET member by ID
+ * GET by ID
  */
-const getMemberById = (req, res) => {
-    const member = members.find(m => m.id == req.params.id);
+const getMemberById = async (req, res, next) => {
+    try {
+        const member = await Member.findById(req.params.id);
 
-    if (!member) {
-        return res.status(404).json({
-            success: false,
-            error: 'Member not found'
+        if (!member) {
+            return res.status(404).json({
+                success: false,
+                error: 'Member not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: member
         });
-    }
 
-    res.status(200).json({
-        success: true,
-        data: member
-    });
+    } catch (error) {
+        next(error);
+    }
 };
 
 /**
- * UPDATE member
+ * UPDATE
  */
-const updateMember = (req, res) => {
-    const member = members.find(m => m.id == req.params.id);
+const updateMember = async (req, res, next) => {
+    try {
+        const member = await Member.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
 
-    if (!member) {
-        return res.status(404).json({
-            success: false,
-            error: 'Member not found'
+        if (!member) {
+            return res.status(404).json({
+                success: false,
+                error: 'Member not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: member
         });
+
+    } catch (error) {
+        next(error);
     }
-
-    const { name, email, active } = req.body;
-
-    if (name) member.name = name;
-    if (email) member.email = email;
-    if (active !== undefined) member.active = active;
-
-    res.status(200).json({
-        success: true,
-        data: member
-    });
 };
 
 /**
- * DELETE member
+ * DELETE
  */
-const deleteMember = (req, res) => {
-    const index = members.findIndex(m => m.id == req.params.id);
+const deleteMember = async (req, res, next) => {
+    try {
+        const member = await Member.findByIdAndDelete(req.params.id);
 
-    if (index === -1) {
-        return res.status(404).json({
-            success: false,
-            error: 'Member not found'
+        if (!member) {
+            return res.status(404).json({
+                success: false,
+                error: 'Member not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Member deleted successfully'
         });
+
+    } catch (error) {
+        next(error);
     }
-
-    members.splice(index, 1);
-
-    res.status(200).json({
-        success: true,
-        message: 'Member deleted successfully'
-    });
 };
 
 module.exports = {

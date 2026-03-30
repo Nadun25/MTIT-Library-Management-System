@@ -1,35 +1,44 @@
 /**
- * Main Server File (Entry Point)
- * ------------------------------------
- * Starts the Member Service on port 8082
+ * Main Server File
  */
 
 const express = require('express');
 const cors = require('cors');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 
-// Import routes and middleware
+dotenv.config();
+
+// Connect DB
+connectDB();
+
 const memberRoutes = require('./routes/memberRoutes');
 const errorHandler = require('./middleware/errorHandler');
 const { swaggerUi, swaggerDocs } = require('./swagger/swagger');
 
 const app = express();
-const PORT = 8082;
+const PORT = process.env.PORT || 8082;
 
 // Middleware
-app.use(cors());              // Allow cross-origin requests
-app.use(express.json());      // Parse JSON request body
+app.use(cors());
+app.use(express.json());
+
+// Root route
+app.get('/', (req, res) => {
+    res.send('Member Service API is running...');
+});
 
 // Routes
 app.use('/api/members', memberRoutes);
 
-// Swagger Documentation
+// Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Error Handling Middleware
+// Error handler
 app.use(errorHandler);
 
-// Start Server
+// Start server
 app.listen(PORT, () => {
-    console.log(`Member Service running on http://localhost:${PORT}`);
-    console.log(`Swagger Docs: http://localhost:${PORT}/api-docs`);
+    console.log(`Server running: http://localhost:${PORT}`);
+    console.log(`Swagger: http://localhost:${PORT}/api-docs`);
 });

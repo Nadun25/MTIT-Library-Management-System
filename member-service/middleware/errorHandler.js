@@ -1,7 +1,5 @@
 /**
  * Global Error Handler
- * ------------------------------------
- * Handles unexpected server errors
  */
 
 const errorHandler = (err, req, res, next) => {

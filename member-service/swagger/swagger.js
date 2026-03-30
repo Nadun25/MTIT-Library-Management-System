@@ -1,9 +1,3 @@
-/**
- * Swagger Configuration
- * ------------------------------------
- * Generates API documentation
- */
-
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
@@ -13,7 +7,7 @@ const options = {
         info: {
             title: 'Member Service API',
             version: '1.0.0',
-            description: 'API for managing library members'
+            description: 'Library Member Service'
         },
         servers: [
             {
@@ -21,7 +15,7 @@ const options = {
             }
         ]
     },
-    apis: ['./routes/*.js'] // Reads route comments (optional)
+    apis: ['./routes/*.js']
 };
 
 const swaggerDocs = swaggerJsDoc(options);

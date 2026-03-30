@@ -1,16 +1,30 @@
-/**
- * Member Model (Simple Structure)
- * ------------------------------------
- * Used as a reference for member objects
- */
+const mongoose = require('mongoose');
 
-class Member {
-    constructor(id, name, email, active = true) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.active = active;
+const memberSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
+    },
+    active: {
+        type: Boolean,
+        default: true
     }
-}
+}, { timestamps: true });
 
-module.exports = Member;
+// Convert _id → id
+memberSchema.method('toJSON', function () {
+    const obj = this.toObject();
+    obj.id = obj._id;
+    delete obj._id;
+    delete obj.__v;
+    return obj;
+});
+
+module.exports = mongoose.model('Member', memberSchema);
