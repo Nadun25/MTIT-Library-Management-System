@@ -1,12 +1,12 @@
 {
-  "name": "member-service",
+  "name": "api-gateway",
   "version": "1.0.0",
-  "description": "",
+  "description": "API Gateway for Library Microservices",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +15,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "mongoose": "^9.3.3",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "http-proxy-middleware": "^3.0.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
