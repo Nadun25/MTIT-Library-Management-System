@@ -64,6 +64,40 @@
  *           type: string
  *           enum: [active, returned, overdue]
  *           description: The status of the loan
+ *
+ *     Fine:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - bookId
+ *         - dueDate
+ *         - returnDate
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: The auto-generated id of the fine
+ *         userId:
+ *           type: string
+ *           description: The ID of the user
+ *         bookId:
+ *           type: string
+ *           description: The ID of the book
+ *         dueDate:
+ *           type: string
+ *           format: date
+ *           example: "2025-01-01"
+ *           description: The date the book was due
+ *         returnDate:
+ *           type: string
+ *           format: date
+ *           example: "2025-01-10"
+ *           description: The date the book was returned
+ *         fineAmount:
+ *           type: number
+ *           description: Calculated fine amount (10 per day late)
+ *         paid:
+ *           type: boolean
+ *           description: Whether the fine has been paid
  */
 
 
@@ -398,6 +432,172 @@
  *         description: Loan deleted successfully
  *       404:
  *         description: Loan not found
+ *       500:
+ *         description: Server error
+ */
+
+
+/**
+ * =========================
+ * FINE ENDPOINTS
+ * =========================
+ */
+
+/**
+ * @swagger
+ * /api/fines:
+ *   get:
+ *     summary: Get all fines
+ *     tags: [Fines]
+ *     responses:
+ *       200:
+ *         description: List of all fines
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 count:
+ *                   type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Fine'
+ *       500:
+ *         description: Server error
+ *
+ *   post:
+ *     summary: Create a fine
+ *     tags: [Fines]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - bookId
+ *               - dueDate
+ *               - returnDate
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               bookId:
+ *                 type: string
+ *               dueDate:
+ *                 type: string
+ *                 example: "2025-01-01"
+ *               returnDate:
+ *                 type: string
+ *                 example: "2025-01-10"
+ *     responses:
+ *       201:
+ *         description: Fine created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Fine'
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/fines/overdue:
+ *   get:
+ *     summary: Get unpaid overdue fines (fineAmount > 0 and paid = false)
+ *     tags: [Fines]
+ *     responses:
+ *       200:
+ *         description: List of overdue fines
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 count:
+ *                   type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Fine'
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/fines/{id}:
+ *   get:
+ *     summary: Get fine by ID
+ *     tags: [Fines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The fine ID
+ *     responses:
+ *       200:
+ *         description: Fine details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Fine'
+ *       404:
+ *         description: Fine not found
+ *       500:
+ *         description: Server error
+ *
+ *   delete:
+ *     summary: Delete a fine
+ *     tags: [Fines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The fine ID
+ *     responses:
+ *       200:
+ *         description: Fine deleted successfully
+ *       404:
+ *         description: Fine not found
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/fines/{id}/pay:
+ *   patch:
+ *     summary: Mark a fine as paid
+ *     tags: [Fines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The fine ID
+ *     responses:
+ *       200:
+ *         description: Fine marked as paid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Fine'
+ *       404:
+ *         description: Fine not found
  *       500:
  *         description: Server error
  */
