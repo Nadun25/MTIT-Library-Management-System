@@ -1,6 +1,14 @@
 const express = require('express');
-const router = express.Router();
-const Fine = require('../models/Fine');
+const router  = express.Router();
+
+const {
+  getAllFines,
+  createFine,
+  getFineById,
+  getOverdueFines,
+  markFineAsPaid,
+  deleteFine
+} = require('../controllers/fineController');
 
 /**
  * @swagger
@@ -17,20 +25,7 @@ const Fine = require('../models/Fine');
  *     tags: [Fines]
  *     responses:
  *       200:
- *         description: List of fines
- */
-router.get('/', async (req, res) => {
-  try {
-    const fines = await Fine.find();
-    res.status(200).json(fines);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /api/fines:
+ *         description: List of all fines
  *   post:
  *     summary: Create a fine
  *     tags: [Fines]
@@ -40,6 +35,7 @@ router.get('/', async (req, res) => {
  *         application/json:
  *           schema:
  *             type: object
+ *             required: [userId, bookId, dueDate, returnDate]
  *             properties:
  *               userId:
  *                 type: string
@@ -47,58 +43,27 @@ router.get('/', async (req, res) => {
  *                 type: string
  *               dueDate:
  *                 type: string
+ *                 example: "2025-01-01"
  *               returnDate:
  *                 type: string
+ *                 example: "2025-01-10"
  *     responses:
- *       200:
+ *       201:
  *         description: Fine created successfully
  */
-router.post('/', async (req, res) => {
-  try {
-    const { userId, bookId, dueDate, returnDate } = req.body;
-
-    const due = new Date(dueDate);
-    const returned = new Date(returnDate);
-
-    let fineAmount = 0;
-
-    if (returned > due) {
-      const daysLate = Math.ceil((returned - due) / (1000 * 60 * 60 * 24));
-      fineAmount = daysLate * 10;
-    }
-
-    const fine = await Fine.create({
-      userId,
-      bookId,
-      dueDate,
-      returnDate,
-      fineAmount
-    });
-
-    res.status(200).json(fine);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.route('/').get(getAllFines).post(createFine);
 
 /**
  * @swagger
  * /api/fines/overdue:
  *   get:
- *     summary: Get unpaid (overdue) fines
+ *     summary: Get unpaid overdue fines (fineAmount > 0 and paid = false)
  *     tags: [Fines]
  *     responses:
  *       200:
  *         description: List of overdue fines
  */
-router.get('/overdue', async (req, res) => {
-  try {
-    const fines = await Fine.find({ paid: false });
-    res.status(200).json(fines);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get('/overdue', getOverdueFines);
 
 /**
  * @swagger
@@ -110,25 +75,13 @@ router.get('/overdue', async (req, res) => {
  *       - in: path
  *         name: id
  *         required: true
- *         description: Fine ID
  *         schema:
  *           type: string
  *     responses:
  *       200:
  *         description: Fine details
- */
-router.get('/:id', async (req, res) => {
-  try {
-    const fine = await Fine.findById(req.params.id);
-    res.status(200).json(fine);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /api/fines/{id}:
+ *       404:
+ *         description: Fine not found
  *   delete:
  *     summary: Delete a fine
  *     tags: [Fines]
@@ -136,20 +89,34 @@ router.get('/:id', async (req, res) => {
  *       - in: path
  *         name: id
  *         required: true
- *         description: Fine ID
  *         schema:
  *           type: string
  *     responses:
  *       200:
  *         description: Fine deleted successfully
+ *       404:
+ *         description: Fine not found
  */
-router.delete('/:id', async (req, res) => {
-  try {
-    await Fine.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Fine deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.route('/:id').get(getFineById).delete(deleteFine);
+
+/**
+ * @swagger
+ * /api/fines/{id}/pay:
+ *   patch:
+ *     summary: Mark a fine as paid
+ *     tags: [Fines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Fine marked as paid
+ *       404:
+ *         description: Fine not found
+ */
+router.patch('/:id/pay', markFineAsPaid);
 
 module.exports = router;
